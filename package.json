@@ -1,0 +1,62 @@
+{
+  "name": "treeground",
+  "version": "0.0.0",
+  "description": "An interactive Tree-Sitter playground",
+  "author": "Al Mahdi",
+  "license": "MIT",
+  "homepage": "https://github.com/picomet/treeground#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/picomet/treeground.git"
+  },
+  "bugs": {
+    "url": "https://github.com/picomet/treeground/issues"
+  },
+  "categories": [
+    "Programming Languages",
+    "Visualization"
+  ],
+  "keywords": [
+    "tree-sitter",
+    "parsing",
+    "playground"
+  ],
+  "bin": {
+    "treeground": "index.js"
+  },
+  "files": [
+    ".output"
+  ],
+  "type": "module",
+  "scripts": {
+    "dev": "vinxi dev",
+    "build": "vinxi build",
+    "start": "vinxi start",
+    "format": "prettier --write .",
+    "release": "npm ci && npm run build && changeset publish"
+  },
+  "engines": {
+    "node": ">=20"
+  },
+  "devDependencies": {
+    "@changesets/cli": "^2.27.8",
+    "@shikijs/monaco": "^1.16.2",
+    "@solidjs/router": "^0.14.3",
+    "@solidjs/start": "^1.0.6",
+    "@trivago/prettier-plugin-sort-imports": "^4.3.0",
+    "autoprefixer": "^10.4.20",
+    "chokidar": "^3.6.0",
+    "monaco-editor-core": "^0.51.0",
+    "ora": "^8.1.0",
+    "postcss": "^8.4.45",
+    "prettier": "^3.3.3",
+    "shiki": "^1.16.2",
+    "solid-icons": "^1.1.0",
+    "solid-js": "^1.8.22",
+    "solid-motionone": "^1.0.1",
+    "tailwindcss": "^3.4.10",
+    "typescript": "^5.5.4",
+    "vinxi": "^0.4.2",
+    "web-tree-sitter": "^0.23.0"
+  }
+}
