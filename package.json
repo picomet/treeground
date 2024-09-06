@@ -1,6 +1,6 @@
 {
   "name": "treeground",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "An interactive Tree-Sitter playground",
   "author": "Al Mahdi",
   "license": "MIT",
