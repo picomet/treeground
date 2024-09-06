@@ -1,5 +1,11 @@
 # treeground
 
+## 0.0.3
+
+### Patch Changes
+
+- ecd3b5d: fix: use yocto-spinner instead of ora
+
 ## 0.0.2
 
 ### Patch Changes
