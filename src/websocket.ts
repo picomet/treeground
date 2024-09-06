@@ -1,11 +1,11 @@
 import chokidar from "chokidar";
 import fs from "fs";
 import https from "https";
-import ora from "ora";
 import os from "os";
 import path from "path";
 import { Party } from "vinxi/dist/types/types/party";
 import { partyHandler } from "vinxi/party";
+import yoctoSpinner from "yocto-spinner";
 import zlib from "zlib";
 
 import { aTryCatch, createExec, downloadFile } from "./utils";
@@ -116,7 +116,7 @@ export default partyHandler({
             type: "tsCliStatus",
             status: tsCliStatus,
           });
-          let spinner = ora({
+          let spinner = yoctoSpinner({
             text: "Downloading tree-sitter-cli",
             color: "yellow",
           }).start();
@@ -137,7 +137,7 @@ export default partyHandler({
                         type: "tsCliStatus",
                         status: tsCliStatus,
                       });
-                      spinner.succeed("Downloaded tree-sitter-cli");
+                      spinner.success("Downloaded tree-sitter-cli");
                     });
                   });
                   res.on("error", (err) => {
@@ -147,7 +147,7 @@ export default partyHandler({
                       type: "tsCliStatus",
                       status: tsCliStatus,
                     });
-                    spinner.succeed("Failed to download tree-sitter-cli");
+                    spinner.success("Failed to download tree-sitter-cli");
                     console.log(err);
                   });
                 }
@@ -174,7 +174,7 @@ export default partyHandler({
         if (!fs.existsSync(tgDir)) {
           fs.mkdirSync(tgDir);
         }
-        let spinner = ora({
+        let spinner = yoctoSpinner({
           text: "Downloading tree-sitter.wasm",
           color: "yellow",
         }).start();
@@ -188,7 +188,7 @@ export default partyHandler({
               type: "tsWasmStatus",
               status: tsWasmStatus,
             });
-            spinner.succeed("Downloaded tree-sitter.wasm");
+            spinner.success("Downloaded tree-sitter.wasm");
           })
           .catch((err) => {
             tsWasmStatus = "error";
@@ -196,7 +196,7 @@ export default partyHandler({
               type: "tsWasmStatus",
               status: tsWasmStatus,
             });
-            spinner.fail("Failed to download tree-sitter.wasm");
+            spinner.error("Failed to download tree-sitter.wasm");
             console.log(err);
           });
       }
@@ -217,15 +217,15 @@ export default partyHandler({
             `cd ${localDir}`,
             "git clone https://github.com/emscripten-core/emsdk --depth 1",
           ];
-          var spinner = ora({
+          var spinner = yoctoSpinner({
             text: "Cloning emsdk",
             color: "yellow",
           }).start();
           var [res, err] = await aTryCatch(() => createExec(commands));
           if (err == null) {
-            spinner.succeed("Cloned emsdk");
+            spinner.success("Cloned emsdk");
           } else {
-            spinner.fail("Failed to clone emsdk");
+            spinner.error("Failed to clone emsdk");
             console.log(err);
             emsdkStatus = "error";
             sendMessageToClient(party, {
@@ -235,25 +235,25 @@ export default partyHandler({
           }
 
           var commands = [`cd ${emsdkDest}`, "./emsdk install latest"];
-          var spinner = ora({
+          var spinner = yoctoSpinner({
             text: "Downloading latest sdk",
             color: "yellow",
           }).start();
           var [res, err] = await aTryCatch(() => createExec(commands));
           if (err == null) {
-            spinner.succeed("Downloaded latest sdk");
+            spinner.success("Downloaded latest sdk");
           } else {
             emsdkStatus = "error";
             sendMessageToClient(party, {
               type: "emsdkStatus",
               status: emsdkStatus,
             });
-            spinner.fail("Failed to install emsdk");
+            spinner.error("Failed to install emsdk");
             console.log(err);
           }
 
           var commands = [`cd ${emsdkDest}`, "./emsdk activate latest"];
-          var spinner = ora({
+          var spinner = yoctoSpinner({
             text: "Activating latest sdk",
             color: "yellow",
           }).start();
@@ -264,14 +264,14 @@ export default partyHandler({
               type: "emsdkStatus",
               status: emsdkStatus,
             });
-            spinner.succeed("Activated latest sdk");
+            spinner.success("Activated latest sdk");
           } else {
             emsdkStatus = "error";
             sendMessageToClient(party, {
               type: "emsdkStatus",
               status: emsdkStatus,
             });
-            spinner.fail("Failed to activate emsdk");
+            spinner.error("Failed to activate emsdk");
             console.log(err);
           }
         })();
@@ -313,12 +313,15 @@ async function buildWasm(folder: string) {
   const localDir = path.join(os.homedir(), ".local");
   const emsdk = path.join(localDir, "emsdk");
   var commands = [`cd ${folder}`, "tree-sitter generate"];
-  var spinner = ora({ text: "Generating parser...", color: "yellow" }).start();
+  var spinner = yoctoSpinner({
+    text: "Generating parser...",
+    color: "yellow",
+  }).start();
   var [res, err] = await aTryCatch(() => createExec(commands));
   if (err == null) {
-    spinner.succeed("Generated parser.");
+    spinner.success("Generated parser.");
   } else {
-    spinner.fail("Failed to generate parser.");
+    spinner.error("Failed to generate parser.");
     throw err;
   }
   var commands = [
@@ -326,12 +329,15 @@ async function buildWasm(folder: string) {
     `source ${path.join(emsdk, "emsdk_env.sh")}`,
     `tree-sitter build --wasm --output ${output}`,
   ];
-  var spinner = ora({ text: "Building wasm...", color: "yellow" }).start();
+  var spinner = yoctoSpinner({
+    text: "Building wasm...",
+    color: "yellow",
+  }).start();
   var [res, err] = await aTryCatch(() => createExec(commands));
   if (err == null) {
-    spinner.succeed("Built wasm.");
+    spinner.success("Built wasm.");
   } else {
-    spinner.fail("Failed to build wasm.");
+    spinner.error("Failed to build wasm.");
     throw err;
   }
 }
