@@ -8,7 +8,12 @@ import { partyHandler } from "vinxi/party";
 import yoctoSpinner from "yocto-spinner";
 import zlib from "zlib";
 
-import { aTryCatch, createExec, downloadFile } from "./utils";
+import {
+  aTryCatch,
+  createExec,
+  downloadFile,
+  getGrmrUniqueName,
+} from "./utils";
 
 let grammars: string[] = [];
 
@@ -47,7 +52,7 @@ export default partyHandler({
                 .then((output) => {
                   const message: ServerMessage = {
                     type: "load",
-                    grammar: path.basename(folder),
+                    grammar: folder,
                   };
                   party.broadcast(JSON.stringify(message));
                 })
@@ -309,7 +314,7 @@ async function buildWasm(folder: string) {
   if (!fs.existsSync(outFolder)) {
     fs.mkdirSync(outFolder);
   }
-  let output = path.join(outFolder, `${path.basename(folder)}.wasm`);
+  let output = path.join(outFolder, `${getGrmrUniqueName(folder)}.wasm`);
   const localDir = path.join(os.homedir(), ".local");
   const emsdk = path.join(localDir, "emsdk");
   var commands = [`cd ${folder}`, "tree-sitter generate"];

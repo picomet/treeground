@@ -17,7 +17,7 @@ import Nav from "~/components/Nav";
 import Tools from "~/components/Tools";
 import Tree from "~/components/Tree";
 
-import { getBaseName, sendMsgToServer } from "~/utils";
+import { getGrmrUniqueName, sendMsgToServer } from "~/utils";
 
 type Modal = "Add" | "Tools" | null;
 
@@ -53,7 +53,7 @@ function App() {
     grammars().find((grammar) => grammar.folder === selectedGrammar())
       ?.highlighter || "text",
   );
-  const [parsers, setParsers] = createSignal<{ [key: string]: Parser }>({});
+  const [parsers, setParsers] = createSignal<{ [grammar: string]: Parser }>({});
 
   onMount(async () => {
     const socket = new WebSocket(`ws://${location.host}/tg`);
@@ -71,7 +71,7 @@ function App() {
         loadParser(message.grammar).then(() => {
           let selectedGrmr = selectedGrammar();
           if (selectedGrmr) {
-            if (getBaseName(selectedGrmr) === message.grammar) {
+            if (selectedGrmr === message.grammar) {
               parse(editor()?.getValue() || "");
             }
           }
@@ -80,24 +80,25 @@ function App() {
     });
     const selectedGrmr = selectedGrammar();
     if (selectedGrmr) {
-      loadParser(getBaseName(selectedGrmr));
+      loadParser(selectedGrmr);
     }
   });
 
   const loadParser = async (grammar: string) => {
     const parser = new Parser();
-    parser.setLanguage(await Parser.Language.load(`/${grammar}.wasm`));
+    parser.setLanguage(
+      await Parser.Language.load(`/${getGrmrUniqueName(grammar)}.wasm`),
+    );
     setParsers((prev) => ({ ...prev, [grammar]: parser }));
   };
 
   const parse = async (content: string) => {
     const selectedGrmr = selectedGrammar();
     if (selectedGrmr) {
-      const grammar = getBaseName(selectedGrmr);
-      let parser = parsers()[getBaseName(grammar)];
+      let parser = parsers()[selectedGrmr];
       if (!parser) {
-        await loadParser(getBaseName(grammar));
-        parser = parsers()[getBaseName(grammar)];
+        await loadParser(selectedGrmr);
+        parser = parsers()[selectedGrmr];
       }
       setTree(parser.parse(content));
     }

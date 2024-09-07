@@ -3,7 +3,7 @@ import * as monaco from "monaco-editor-core";
 import { BundledLanguage, createHighlighter } from "shiki";
 import { Accessor, Component, Setter, createEffect, untrack } from "solid-js";
 
-import { getBaseName } from "~/utils";
+import { getGrmrUniqueName } from "~/utils";
 
 interface Props {
   editor: Accessor<monaco.editor.IStandaloneCodeEditor | null>;
@@ -36,10 +36,10 @@ const Editor: Component<Props> = (props) => {
         monaco.languages.register({ id: selectedHighlighter });
         shikiToMonaco(highlighter, monaco);
 
-        let grammarName = getBaseName(selectedGrammar);
+        let grmrUniqueName = getGrmrUniqueName(selectedGrammar);
 
         const editor = monaco.editor.create(ref, {
-          value: localStorage.getItem(`treeground.${grammarName}`) || "",
+          value: localStorage.getItem(`treeground.${grmrUniqueName}`) || "",
           language: selectedHighlighter,
           theme: "dark-plus",
           automaticLayout: true,
@@ -47,7 +47,10 @@ const Editor: Component<Props> = (props) => {
         });
         editor.onDidChangeModelContent(() => {
           untrack(() => props.parse(editor.getValue()));
-          localStorage.setItem(`treeground.${grammarName}`, editor.getValue());
+          localStorage.setItem(
+            `treeground.${grmrUniqueName}`,
+            editor.getValue(),
+          );
         });
         editor.onDidChangeCursorPosition((e) => {
           let selection = editor.getSelection();

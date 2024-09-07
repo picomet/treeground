@@ -9,7 +9,9 @@ export default createMiddleware({
   onRequest: [
     (event) => {
       let url = new URL(event.request.url);
-      if (url.pathname.match(/^(\/)tree-sitter(-[a-zA-Z]+)?(\.wasm)$/)) {
+      if (
+        url.pathname.match(/^(\/)tree-sitter(-[a-zA-Z]+.[a-z0-9]{6})?(\.wasm)$/)
+      ) {
         let fileName = url.pathname.split("/").pop();
         if (fileName) {
           let location = path.join(wasmDir, fileName);

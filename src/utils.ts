@@ -1,5 +1,6 @@
 import fs from "fs";
 import https from "https";
+import md5 from "md5";
 
 export const sendMsgToServer = (ws: WebSocket, message: ClientMessage) => {
   return ws.send(JSON.stringify(message));
@@ -38,6 +39,10 @@ export const downloadFile = (url: string, dest: string) => {
 export const getBaseName = (path: string) => {
   const parts = path.split("/");
   return parts[parts.length - 1];
+};
+
+export const getGrmrUniqueName = (grammar: string) => {
+  return `${getBaseName(grammar)}.${md5(grammar).slice(0, 6)}`;
 };
 
 export const aTryCatch = async <T>(
