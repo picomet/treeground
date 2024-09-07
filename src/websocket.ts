@@ -48,7 +48,7 @@ export default partyHandler({
           if (path.basename(filePath) === "grammar.js") {
             clearTimeout(builds[folder]);
             builds[folder] = setTimeout(() => {
-              buildWasm(folder)
+              generateNbuildWasm(folder, party)
                 .then((output) => {
                   const message: ServerMessage = {
                     type: "load",
@@ -283,7 +283,7 @@ export default partyHandler({
       }
     } else if (msg.type === "add") {
       if (fs.existsSync(msg.folder)) {
-        buildWasm(msg.folder)
+        generateNbuildWasm(msg.folder, party)
           .then((output) => {
             if (!grammars.includes(msg.folder)) {
               grammars.push(msg.folder);
@@ -309,7 +309,7 @@ export default partyHandler({
   },
 });
 
-async function buildWasm(folder: string) {
+async function generateNbuildWasm(folder: string, party: Party) {
   let outFolder = path.join(os.homedir(), ".cache", "treeground");
   if (!fs.existsSync(outFolder)) {
     fs.mkdirSync(outFolder);
@@ -327,6 +327,11 @@ async function buildWasm(folder: string) {
     spinner.success("Generated parser.");
   } else {
     spinner.error("Failed to generate parser.");
+    sendMessageToClient(party, {
+      type: "generateError",
+      grammar: folder,
+      error: err.toString(),
+    });
     throw err;
   }
   var commands = [
@@ -343,6 +348,11 @@ async function buildWasm(folder: string) {
     spinner.success("Built wasm.");
   } else {
     spinner.error("Failed to build wasm.");
+    sendMessageToClient(party, {
+      type: "wasmError",
+      grammar: folder,
+      error: err.toString(),
+    });
     throw err;
   }
 }

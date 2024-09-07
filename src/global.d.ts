@@ -49,6 +49,16 @@ type ServerMessage =
       grammar: string;
     }
   | {
+      type: "generateError";
+      grammar: string;
+      error: string;
+    }
+  | {
+      type: "wasmError";
+      grammar: string;
+      error: string;
+    }
+  | {
       type: "tsCliStatus";
       status: TsCliStatus;
     }

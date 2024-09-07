@@ -1,8 +1,12 @@
 import * as monaco from "monaco-editor-core";
 import { BundledLanguage } from "shiki";
+import { AiFillCloseCircle, AiFillQuestionCircle } from "solid-icons/ai";
 import {
   Accessor,
+  Match,
   Setter,
+  Show,
+  Switch,
   createContext,
   createEffect,
   createReaction,
@@ -40,6 +44,10 @@ function App() {
   const [selection, setSelection] = createSignal<monaco.Selection | null>(null);
   const [tree, setTree] = createSignal<Parser.Tree | null>(null);
   const [errors, setErrors] = createSignal<number>(0);
+  const [error, setError] = createSignal<{
+    type: "generate" | "wasm";
+    error: string;
+  } | null>(null);
 
   const [grammars, setGrammars] = createSignal<TsGrammar[]>(
     JSON.parse(localStorage.getItem("treeground.grammars") || "[]"),
@@ -68,6 +76,7 @@ function App() {
     socket.addEventListener("message", (event) => {
       const message = JSON.parse(event.data) as ServerMessage;
       if (message.type === "load") {
+        setError(null);
         loadParser(message.grammar).then(() => {
           let selectedGrmr = selectedGrammar();
           if (selectedGrmr) {
@@ -75,6 +84,16 @@ function App() {
               parse(editor()?.getValue() || "");
             }
           }
+        });
+      } else if (message.type === "generateError") {
+        setError({
+          type: "generate",
+          error: message.error,
+        });
+      } else if (message.type === "wasmError") {
+        setError({
+          type: "wasm",
+          error: message.error,
         });
       }
     });
@@ -192,6 +211,39 @@ function App() {
         </div>
       </div>
       <Tools />
+      <Show when={error()}>
+        {(err) => (
+          <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+            <div class="bg-white rounded-lg min-w-[calc(100vw*0.75)]">
+              <div class="flex justify-end p-2 border-b border-gray-300">
+                <AiFillCloseCircle
+                  size={28}
+                  class="text-gray-500 hover:text-blue-500 active:scale-110 transition-all cursor-pointer"
+                  onclick={() => setError(null)}
+                />
+              </div>
+              <div class="p-3">
+                <div class="my-2 flex gap-1 align-top">
+                  <AiFillQuestionCircle size={22} class="text-red-500" />
+                  <p class="font-bold m-0">
+                    <Switch>
+                      <Match when={err().type === "generate"}>
+                        Failed to generate parser
+                      </Match>
+                      <Match when={err().type === "wasm"}>
+                        Failed to build wasm
+                      </Match>
+                    </Switch>
+                  </p>
+                </div>
+                <pre class="text-gray-700 bg-gray-300 p-2 rounded-md w-100 overflow-auto">
+                  {err().error}
+                </pre>
+              </div>
+            </div>
+          </div>
+        )}
+      </Show>
     </AppContext.Provider>
   );
 }
