@@ -1,5 +1,15 @@
 # treeground
 
+## 0.1.0
+
+### Minor Changes
+
+- b3c4ef8: feat: report generate and build error
+
+### Patch Changes
+
+- 851046b: fix: allow multiple grmr with same dir name
+
 ## 0.0.3
 
 ### Patch Changes
