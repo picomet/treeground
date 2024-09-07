@@ -5,6 +5,8 @@
 
 An interactive Tree-Sitter playground
 
+![Screenshot](screenshot.png)
+
 ## Features
 
 - Hot refreshing
