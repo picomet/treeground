@@ -124,11 +124,8 @@ function App() {
   };
 
   createEffect(() => {
-    const selectedGrmr = selectedGrammar();
-    if (selectedGrmr) {
-      localStorage.setItem("treeground.selectedGrammar", selectedGrmr);
-      parseOnNewEditor();
-    }
+    localStorage.setItem("treeground.selectedGrammar", selectedGrammar() || "");
+    parseOnNewEditor();
   });
 
   createEffect(() => {
@@ -140,6 +137,8 @@ function App() {
       const e = editor();
       if (e) {
         parse(e.getValue());
+      } else {
+        setTree(null);
       }
     });
     track(() => editor());

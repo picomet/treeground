@@ -305,6 +305,11 @@ export default partyHandler({
           watcher.add(folder);
         }
       }
+    } else if (msg.type === "remove") {
+      if (grammars.includes(msg.folder)) {
+        grammars = grammars.filter((grammar) => grammar !== msg.folder);
+        watcher.unwatch(msg.folder);
+      }
     }
   },
 });

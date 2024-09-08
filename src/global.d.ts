@@ -11,6 +11,10 @@ type ClientMessage =
       folder: string;
     }
   | {
+      type: "remove";
+      folder: string;
+    }
+  | {
       type: "watch";
       folders: string[];
     }

@@ -22,13 +22,14 @@ const Editor: Component<Props> = (props) => {
   createEffect(() => {
     const selectedGrammar = props.selectedGrammar();
     const selectedHighlighter = props.selectedHighlighter();
+    untrack(() => {
+      let editor = props.editor();
+      if (editor) {
+        editor.dispose();
+      }
+      props.setEditor(null);
+    });
     if (selectedGrammar) {
-      untrack(() => {
-        let editor = props.editor();
-        if (editor) {
-          editor.dispose();
-        }
-      });
       createHighlighter({
         themes: ["dark-plus"],
         langs: [selectedHighlighter],

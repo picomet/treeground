@@ -1,5 +1,6 @@
 import { BundledLanguage, bundledLanguages } from "shiki";
 import { AiFillCloseCircle, AiOutlinePlus } from "solid-icons/ai";
+import { IoTrash } from "solid-icons/io";
 import {
   Accessor,
   Component,
@@ -51,6 +52,23 @@ const Nav: Component<{
     }
   };
 
+  const removeGrammar = (e: Event) => {
+    e.preventDefault();
+    const socket = props.ws();
+    const selectedGrmr = props.selectedGrammar();
+    if (socket && selectedGrmr) {
+      sendMsgToServer(socket, {
+        type: "remove",
+        folder: selectedGrmr,
+      });
+      props.setGrammars((prev) =>
+        prev.filter((grammar) => grammar.folder !== selectedGrmr),
+      );
+      props.parseOnNewEditor();
+      props.setSelectedGrammar(props.grammars().at(-1)?.folder);
+    }
+  };
+
   const findSelectedGrammar = () => {
     const selectedGrmr = props.selectedGrammar();
     if (selectedGrmr) {
@@ -89,6 +107,7 @@ const Nav: Component<{
         grmrs[grmrIndex].highlighter = value;
         props.setGrammars((prev) => [...prev]);
         props.setSelectedHighlighter(value);
+        props.parseOnNewEditor();
       }
     }
   };
@@ -103,6 +122,28 @@ const Nav: Component<{
       >
         <AiOutlinePlus />
       </button>
+      <Show when={ctx.modal() === "Add"}>
+        <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+          <div class="bg-white rounded-lg w-full max-w-md">
+            <div class="flex justify-end p-2 border-b border-gray-300">
+              <AiFillCloseCircle
+                size={28}
+                class="text-gray-500 hover:text-blue-500 active:scale-110 transition-all cursor-pointer"
+                onclick={() => ctx.setModal(null)}
+              />
+            </div>
+            <form class="flex gap-2 p-2 my-2" onSubmit={(e) => addGrammar(e)}>
+              <input
+                class="p-2 border border-gray-300 rounded w-full"
+                placeholder="grammar folder"
+                value={inputGrammar()}
+                onChange={(e) => setInputGrammar(e.target.value)}
+              />
+            </form>
+          </div>
+        </div>
+      </Show>
+      <div class="w-[1px] self-stretch bg-gray-300 rounded-l"></div>
       <Show when={props.grammars().length}>
         <select
           class="border border-gray-300 rounded"
@@ -139,26 +180,17 @@ const Nav: Component<{
           ))}
         </select>
       </Show>
-      <Show when={ctx.modal() === "Add"}>
-        <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-          <div class="bg-white rounded-lg w-full max-w-md">
-            <div class="flex justify-end p-2 border-b border-gray-300">
-              <AiFillCloseCircle
-                size={28}
-                class="text-gray-500 hover:text-blue-500 active:scale-110 transition-all cursor-pointer"
-                onclick={() => ctx.setModal(null)}
-              />
-            </div>
-            <form class="flex gap-2 p-2 my-2" onSubmit={(e) => addGrammar(e)}>
-              <input
-                class="p-2 border border-gray-300 rounded w-full"
-                placeholder="grammar folder"
-                value={inputGrammar()}
-                onChange={(e) => setInputGrammar(e.target.value)}
-              />
-            </form>
-          </div>
-        </div>
+      <Show when={props.selectedGrammar()}>
+        <button
+          class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
+          title="Remove grammar"
+          onClick={removeGrammar}
+        >
+          <IoTrash />
+        </button>
+      </Show>
+      <Show when={props.grammars().length}>
+        <div class="w-[1px] self-stretch bg-gray-300 rounded-l"></div>
       </Show>
       <button
         class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded"
