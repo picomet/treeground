@@ -81,6 +81,7 @@ const Nav: Component<{
   const handleGrammarChange = (e: Event & { target: HTMLSelectElement }) => {
     const value = e.target.value;
     if (value) {
+      props.parseOnNewEditor();
       batch(() => {
         props.setSelectedGrammar(value);
         props.setSelectedHighlighter(

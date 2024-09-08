@@ -27,7 +27,6 @@ const Editor: Component<Props> = (props) => {
       if (editor) {
         editor.dispose();
       }
-      props.setEditor(null);
     });
     if (selectedGrammar) {
       createHighlighter({
@@ -64,6 +63,8 @@ const Editor: Component<Props> = (props) => {
         });
         props.setEditor(editor);
       });
+    } else {
+      props.setEditor(null);
     }
   });
 

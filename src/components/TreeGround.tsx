@@ -125,7 +125,6 @@ function App() {
 
   createEffect(() => {
     localStorage.setItem("treeground.selectedGrammar", selectedGrammar() || "");
-    parseOnNewEditor();
   });
 
   createEffect(() => {
