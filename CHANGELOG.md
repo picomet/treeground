@@ -1,5 +1,15 @@
 # treeground
 
+## 0.2.0
+
+### Minor Changes
+
+- 5318450: feat: add remove grammar button
+
+### Patch Changes
+
+- 278dbc5: fix: do not parse on highlighter change
+
 ## 0.1.0
 
 ### Minor Changes
