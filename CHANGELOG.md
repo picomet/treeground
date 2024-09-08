@@ -1,5 +1,11 @@
 # treeground
 
+## 0.2.1
+
+### Patch Changes
+
+- c666373: fix: parse on selected grammar change
+
 ## 0.2.0
 
 ### Minor Changes
