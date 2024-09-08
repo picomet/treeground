@@ -107,7 +107,6 @@ const Nav: Component<{
         grmrs[grmrIndex].highlighter = value;
         props.setGrammars((prev) => [...prev]);
         props.setSelectedHighlighter(value);
-        props.parseOnNewEditor();
       }
     }
   };
