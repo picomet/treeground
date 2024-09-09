@@ -7,6 +7,7 @@ import {
   Setter,
   Show,
   batch,
+  createEffect,
   createSignal,
   useContext,
 } from "solid-js";
@@ -25,8 +26,16 @@ const Nav: Component<{
   errors: Accessor<number>;
   parseOnNewEditor: () => void;
 }> = (props) => {
+  let addGrmrModalRef: HTMLDivElement = null!;
+  let addGrmrInputRef: HTMLInputElement = null!;
   const ctx = useContext(AppContext);
   const [inputGrammar, setInputGrammar] = createSignal<string>("");
+
+  createEffect(() => {
+    if (ctx.modal() === "Add") {
+      addGrmrInputRef.focus();
+    }
+  });
 
   const addGrammar = (e: SubmitEvent) => {
     e.preventDefault();
@@ -123,7 +132,10 @@ const Nav: Component<{
         <AiOutlinePlus />
       </button>
       <Show when={ctx.modal() === "Add"}>
-        <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
+        <div
+          class="fixed inset-0 bg-black/50 flex items-center justify-center z-50"
+          ref={addGrmrModalRef}
+        >
           <div class="bg-white rounded-lg w-full max-w-md">
             <div class="flex justify-end p-2 border-b border-gray-300">
               <AiFillCloseCircle
@@ -138,6 +150,7 @@ const Nav: Component<{
                 placeholder="grammar folder"
                 value={inputGrammar()}
                 onChange={(e) => setInputGrammar(e.target.value)}
+                ref={addGrmrInputRef}
               />
             </form>
           </div>
