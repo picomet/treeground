@@ -17,7 +17,6 @@ import { AppContext } from "~/components/TreeGround";
 import { getBaseName, sendMsgToServer } from "~/utils";
 
 const Nav: Component<{
-  ws: Accessor<WebSocket | null>;
   grammars: Accessor<TsGrammar[]>;
   setGrammars: Setter<TsGrammar[]>;
   selectedGrammar: Accessor<string | undefined>;
@@ -41,7 +40,7 @@ const Nav: Component<{
     e.preventDefault();
     const inputGrmr = inputGrammar();
     if (inputGrmr) {
-      const socket = props.ws();
+      const socket = ctx.ws();
       if (socket) {
         sendMsgToServer(socket, {
           type: "add",
@@ -63,7 +62,7 @@ const Nav: Component<{
 
   const removeGrammar = (e: Event) => {
     e.preventDefault();
-    const socket = props.ws();
+    const socket = ctx.ws();
     const selectedGrmr = props.selectedGrammar();
     if (socket && selectedGrmr) {
       sendMsgToServer(socket, {

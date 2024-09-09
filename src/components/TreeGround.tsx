@@ -169,7 +169,6 @@ function App() {
     <AppContext.Provider value={{ modal, setModal, ws }}>
       <div class="p-2">
         <Nav
-          ws={ws}
           grammars={grammars}
           setGrammars={setGrammars}
           selectedGrammar={selectedGrammar}
