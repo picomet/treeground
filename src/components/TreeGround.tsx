@@ -212,7 +212,7 @@ function App() {
       <Show when={error()}>
         {(err) => (
           <div class="fixed inset-0 bg-black/50 flex items-center justify-center z-50">
-            <div class="bg-white rounded-lg min-w-[calc(100vw*0.75)]">
+            <div class="bg-white rounded-lg min-w-[calc(100vw*0.80)] max-w-[calc(100vw*0.90)] max-h-[calc(100vh*0.90)] flex flex-col">
               <div class="flex justify-end p-2 border-b border-gray-300">
                 <AiFillCloseCircle
                   size={28}
@@ -220,7 +220,7 @@ function App() {
                   onclick={() => setError(null)}
                 />
               </div>
-              <div class="p-3">
+              <div class="p-3 flex-grow max-h-full flex flex-col overflow-hidden">
                 <div class="my-2 flex gap-1 align-top">
                   <AiFillQuestionCircle size={22} class="text-red-500" />
                   <p class="font-bold m-0">
