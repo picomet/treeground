@@ -45,7 +45,8 @@ export default partyHandler({
     watcher.on("change", (filePath) => {
       for (const folder of grammars) {
         if (filePath.startsWith(folder)) {
-          if (path.basename(filePath) === "grammar.js") {
+          const fileName = path.basename(filePath);
+          if (fileName === "grammar.js" || fileName === "scanner.c") {
             clearTimeout(builds[folder]);
             builds[folder] = setTimeout(() => {
               generateNbuildWasm(folder, party)
