@@ -34,6 +34,7 @@
     "build": "vinxi build",
     "start": "vinxi start",
     "format": "prettier --write .",
+    "v": "changeset version && npm install synclockver --no-save && synclockver",
     "release": "npm ci && npm run build && changeset publish"
   },
   "engines": {
