@@ -1,5 +1,16 @@
 # treeground
 
+## 0.3.0
+
+### Minor Changes
+
+- 89494d1: impr(ui): auto focus on add grammar input
+
+### Patch Changes
+
+- 0216b29: fix: also build on scanner.c change
+- 45f32b6: ui(fix): set max height to error message
+
 ## 0.2.1
 
 ### Patch Changes
